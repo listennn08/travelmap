@@ -77,7 +77,6 @@ export default {
     watch: {
         passdata: function () {
             this.passdata.forEach( (el) => {
-                console.log(el.count)
                 this.data.push({
                     id: el.id,
                     name: el.name,
@@ -103,7 +102,7 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-html, body
+html, body 
     padding: 0
     margin: 0
 </style>

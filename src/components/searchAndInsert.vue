@@ -1,6 +1,6 @@
 <template lang="pug">
     #searchAndInsert
-        .main.col.col-sm.offset-sm-1.card.mt-5
+        .main.col.card.mt-5
             ul.nav.nav-tabs(role="tablist")
                 li.nav-item: a#searchTab.nav-link.active(data-toggle="tab" href="#search" role="tab" aria-controls="#search" aria-selected="false") 查詢
                 li.nav-item.active: a#insertTab.nav-link(data-toggle="tab" href="#insert" role="tab" aria-controls="#insert" aria-selected="false") 新增
@@ -114,7 +114,7 @@ export default {
     watch: {
         date() {
             console.log(moment(this.date).format("YYYY/MM/DD"))
-        }
+        },
     },
     components: {
         DatePicker
@@ -132,8 +132,6 @@ export default {
             .then(() => {
                 this.passDataToMap(this.responseData.filter(el=> el.Region == "高雄市"))
             })
-
-
     },
     mounted() {
         jQuery('#searchTab').on('click', function (e) {
@@ -197,7 +195,6 @@ export default {
                     return result.data
                 })
                 .then((data) => {
-                    console.log(`returnData: ${data}`)
                     data.forEach(element => {
                         this.returnData.push({
                             id: element.i,
@@ -209,7 +206,6 @@ export default {
                     });
                 })
                 .then(() => {
-                    console.log("after get data" + this.returnData)
                     this.passDataToMap()
                 })
         },
@@ -250,8 +246,10 @@ export default {
                     this.insertApi();
                     break;
                 default:
-                    alert('Error')
+                    alert('Error');
+                        
             }
+            this.collapse();
         },
         passDataToMap() {
             arguments[0].forEach((el) => {
@@ -266,6 +264,17 @@ export default {
 
             this.$emit('returnMapData', this.returnData);
             // this.$emit('test', arguments[0])
+        },
+        collapse() {
+            // console.log(jQuery('#searchAndInsert').css('width') == "0px");
+            if (jQuery('#searchAndInsert').css('width') == "0px") {
+                jQuery('#searchAndInsert').css('width', "30%");
+                jQuery("#map").css('width', "60%");
+            } else {
+                jQuery('#searchAndInsert').css('width', "0");
+                jQuery("#container").css('margin-left', "0");
+                jQuery("#map").css('width', "100%");
+            }
         }
     }
 }

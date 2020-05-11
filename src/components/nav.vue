@@ -9,17 +9,18 @@ import "bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 
 export default {
+
     methods: {
         collapse() {
-            // jQuery('#searchAndInsert')
-            if (document.getElementById("searchAndInsert").style.width == 0) {
-                document.getElementById("searchAndInsert").style.width = "250px";
-                document.getElementById("map").style.marginLeft = "250px";
+            // console.log(jQuery('#searchAndInsert').css('width') == "0px");
+            if (jQuery('#searchAndInsert').css('width') == "0px") {
+                jQuery('#searchAndInsert').css('width', "30%");
+                jQuery("#map").css('width', "60%");
             } else {
-                document.getElementById("searchAndInsert").style.width = "0px";
-                document.getElementById("map").style.marginLeft = "0";
+                jQuery('#searchAndInsert').css('width', "0");
+                jQuery("#container").css('margin-left', "0");
+                jQuery("#map").css('width', "100%");
             }
-
         }
     }
 }
