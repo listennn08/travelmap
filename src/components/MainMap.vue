@@ -31,7 +31,7 @@
                 )
                 l-popup
                     h2 {{ item.name }}
-                    p(v-show="item.count") 預估觀光人數: {{ item.count }}
+                    p(v-show="item.count!=''") 預估觀光人數: {{ item.count }}
 
 </template>
 <script>

@@ -218,10 +218,11 @@ export default {
                 date: moment(this.date).format('YYYYMMDD'),
                 count: this.peopleNum
             }
-            axios.post(`${url}${this.searchType}?apikey=${obj.apikey}&id=${obj.id}&date=${obj.date}&count=${obj.count}`)
+            axios.post(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${obj.id}&date=${obj.date}&count=${obj.count}`)
                 .then((result) => {
-                    if (result.state == 200) {
-                        alert('上傳資料成功')
+                    // console.log(result)
+                    if (result.status == 200) {
+                        alert('上傳資料成功');
                     }
                 })
         },
