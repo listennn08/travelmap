@@ -3,6 +3,7 @@
         l-map(
             ref="map"
             :zoom="zoom"
+            :center="center"
             :options="options"
             style="height: 100vh;"
         )
@@ -30,26 +31,20 @@
                 )
                 l-popup
                     h2 {{ item.name }}
-                    p 預估觀光人數: {{ item.count }}
+                    p(v-show="item.count") 預估觀光人數: {{ item.count }}
 
 </template>
 <script>
 export default {
     data() {
         return {
-            data: [
-                // { id: 1, name: "夢時代購物中心", local: [22.595153, 120.306923] },
-                // { id: 2, name: "漢神百貨", local: [22.61942, 120.296386] },
-                // { id: 3, name: "漢神巨蛋", local: [22.669603, 120.302288] },
-                // { id: 4, name: "大統百貨", local: [22.630748, 120.318033] }
-            ],
-
+            data: [],
             zoom: 13,
             center: [22.612961, 120.304167],
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             attribution: `© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors`,
             options: {
-                zoomControl: false
+                zoomControl: false,
             },
             icon: {
                 type: {
@@ -59,6 +54,8 @@ export default {
                         "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png",
                     green:
                         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+                    oringe:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
                     red:
                         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
                 },
@@ -76,6 +73,7 @@ export default {
     },
     watch: {
         passdata: function () {
+            this.data = [];
             this.passdata.forEach( (el) => {
                 this.data.push({
                     id: el.id,
@@ -93,8 +91,11 @@ export default {
             navigator.geolocation.getCurrentPosition(position => {
                 const p = position.coords;
                 // 將中心點設為目前的位置
-                this.center = [p.latitude, p.longitude];
+                this.center = [p.latitude, p.longitude] ;
                 // 將目前的位置的標記點彈跳視窗打開
+                this.$refs.location.mapObject.openPopup();
+            }, (error) => {
+                this.center = [this.center[0]+0.005, this.center[1]];
                 this.$refs.location.mapObject.openPopup();
             });
         });

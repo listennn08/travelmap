@@ -23,7 +23,7 @@
                         date-picker#sdate.date.form-group(v-model="date" type="month" format="YYYY/MM" v-show="selectSearchType=='mw_qrycnt03.php'")
                         br
                         button(@click="submit('search')").form-control.btn.btn-outline-primary.offset-md-1.col-md-5 查詢
-                        button.form-control.btn.btn-outline-danger.col-md-5 取消
+                        button(@click="collapse()").form-control.btn.btn-outline-danger.col-md-5 取消
                         .result
                 #insert.tab-pane.fade
                     .form-group
@@ -41,7 +41,7 @@
                         date-picker#date.date.form-group(v-model="date" format="YYYY/MM/DD")
                         br
                         button(@click="submit('insert')").form-control.btn.btn-outline-primary.offset-md-1.col-md-5 新增
-                        button.form-control.btn.btn-outline-danger.col-md-5 取消
+                        button(@click="collapse()").form-control.btn.btn-outline-danger.col-md-5 取消
                         .result
                 #marked.offset-md-6.offset-sm-9.col-md-7.col-sm-8
                     h6 景點資料來源:
@@ -163,26 +163,26 @@ export default {
             switch (this.selectSearchType) {
                 case 'mw_qryspt01.php':
                     obj.id = this.selectSight;
-					url += `&${obj.id}`
+					url += `&id=${obj.id}`
                     break;
                 case 'mw_qryspt02.php':
                     obj.region = this.selectCounty;
-					url += `&${obj.region}`
+					url += `&region=${obj.region}`
                     break;
                 case 'mw_qrycnt01.php':
                     obj.region = this.selectCounty;
                     obj.date = moment(this.date).format('YYYYMMDD');
-					url += `&${obj.region}&date=${obj.date}`
+					url += `&region=${obj.region}&date=${obj.date}`
                     break;
                 case 'mw_qrycnt02.php':
                     obj.id = this.selectSight;
                     obj.date = moment(this.date).format('YYYYMMDD');
-					url += `&${obj.id}&date=${obj.date}`
+					url += `&id=${obj.id}&date=${obj.date}`
                     break;
                 case 'mw_qrycnt03.php':
                     obj.id = this.selectSight;
                     obj.date = moment(this.date).format('YYYYMM');
-					url += `&${obj.id}&date=${obj.date}`
+					url += `&id=${obj.id}&date=${obj.date}`
                     break;
             };
             // console.log(`${cors}http://menswalk.prjlife.com/${this.selectSearchType}`)
@@ -195,18 +195,19 @@ export default {
                     return result.data
                 })
                 .then((data) => {
+                    this.returnData = [];
                     data.forEach(element => {
                         this.returnData.push({
                             id: element.i,
                             name: element.n,
                             add: element.a,
                             local: [element.y, element.x],
-                            count: element.count
+                            count: element.c
                         })
                     });
                 })
-                .then(() => {
-                    this.passDataToMap()
+                .then(async() => {
+                    await this.$emit('returnMapData', this.returnData)
                 })
         },
         insertApi() {
@@ -227,7 +228,7 @@ export default {
         submit(type) {
             switch (type.toLowerCase()) {
                 case 'search':
-                    if (this.searchType == "mw_qryspt01.php" || this.searchType == "mw_qrycnt02.php") {
+                    if (this.selectSearchType == "mw_qryspt01.php" || this.selectSearchType == "mw_qrycnt02.php") {
                         if (!this.selectSight) {
                             alert('請檢查景點欄位');
                             return;
@@ -237,7 +238,7 @@ export default {
                     break;
                 case 'insert':
                     if (type == 'insert') {
-                        this.searchType = "mw_addcnt01.php";
+                        this.selectSearchType = "mw_addcnt01.php";
                     }
                     if (this.peopleNum == 0 || this.selectSight == '') {
                         alert('請檢查欄位, 人數不可為0');
@@ -258,7 +259,7 @@ export default {
                             name: el.Name,
                             add: el.Add,
                             local: [el.Py, el.Px],
-                            count: Math.floor(Math.random() * 20000)
+                            count: el.c
                         })
             })
 
