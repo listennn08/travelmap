@@ -1,6 +1,6 @@
 <template lang="pug">
     #searchAndInsert
-        .main.col-md-6.offset-md-3.card.mt-5.p-2
+        .main.col.col-sm.offset-sm-1.card.mt-5
             ul.nav.nav-tabs(role="tablist")
                 li.nav-item: a#searchTab.nav-link.active(data-toggle="tab" href="#search" role="tab" aria-controls="#search" aria-selected="false") 查詢
                 li.nav-item.active: a#insertTab.nav-link(data-toggle="tab" href="#insert" role="tab" aria-controls="#insert" aria-selected="false") 新增
@@ -22,8 +22,8 @@
                         date-picker#sdate.date.form-group(v-model="date" format="YYYY/MM/DD" v-show="selectSearchType!='mw_qrycnt03.php'")
                         date-picker#sdate.date.form-group(v-model="date" type="month" format="YYYY/MM" v-show="selectSearchType=='mw_qrycnt03.php'")
                         br
-                        button(@click="submit('search')").form-control.btn.btn-primary.offset-md-1.col-md-5 查詢
-                        button.form-control.btn.btn-danger.col-md-5 取消
+                        button(@click="submit('search')").form-control.btn.btn-outline-primary.offset-md-1.col-md-5 查詢
+                        button.form-control.btn.btn-outline-danger.col-md-5 取消
                         .result
                 #insert.tab-pane.fade
                     .form-group
@@ -40,10 +40,10 @@
                         br
                         date-picker#date.date.form-group(v-model="date" format="YYYY/MM/DD")
                         br
-                        button(@click="submit('insert')").form-control.btn.btn-primary.offset-md-1.col-md-5 新增
-                        button.form-control.btn.btn-danger.col-md-5 取消
+                        button(@click="submit('insert')").form-control.btn.btn-outline-primary.offset-md-1.col-md-5 新增
+                        button.form-control.btn.btn-outline-danger.col-md-5 取消
                         .result
-                #marked.offset-md-7.offset-sm-9.col-md-6.col-sm-8
+                #marked.offset-md-6.offset-sm-9.col-md-7.col-sm-8
                     h6 景點資料來源:
                         a(href="https://data.gov.tw/dataset/7777") 觀光局
 </template>
@@ -127,7 +127,7 @@ export default {
             .then((result) => result.data)
             .then((jsonData) => {
                 this.responseData = jsonData.XML_Head.Infos.Info
-                console.log(this.responseData[0])
+                // console.log(this.responseData[0])
             })
             .then(() => {
                 this.passDataToMap(this.responseData.filter(el=> el.Region == "高雄市"))
@@ -204,6 +204,7 @@ export default {
                             name: element.n,
                             add: element.a,
                             local: [element.y, element.x],
+                            count: element.count
                         })
                     });
                 })
@@ -257,8 +258,9 @@ export default {
                 this.returnData.push({
                             id: el.Id,
                             name: el.Name,
-                            add: el.add,
+                            add: el.Add,
                             local: [el.Py, el.Px],
+                            count: Math.floor(Math.random() * 20000)
                         })
             })
 

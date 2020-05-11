@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <nav-Component />
         <main-map :passdata="mapData"/>
         <search-and-insert @returnMapData="getMapData"/>
     </div>
@@ -8,11 +9,12 @@
 <script>
 import MainMap from './components/MainMap'
 import SearchAndInsert from './components/searchAndInsert'
-
+import navComponent from './components/nav'
 
 export default {
     name: 'App',
     components: {
+        navComponent,
         MainMap,
         SearchAndInsert
     },
@@ -35,11 +37,19 @@ export default {
     padding: 0;
     margin: 0;
 }
+#nav {
+    position: fixed;
+    top: 0;
+}
 #searchAndInsert {
     position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 1;
+    float: left;
+    left: 2%;
+    /* top: 0;
+    bottom: 0;
+    right: 0; */
+    width: 30%
+
 }
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -50,6 +60,10 @@ export default {
     /* margin-top: 60px; */
 }
 #map {
-    z-index: -999;
+    position: relative;
+    float: right;
+    /* margin-top: 50px; */
+    width: 60%;
+    height: 70%;
 }
 </style>

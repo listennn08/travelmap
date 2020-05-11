@@ -21,24 +21,27 @@
                 :key="item.id"
             )
                 l-icon(
-                    :icon-url="item.name === '夢時代購物中心'?icon.type.gold:icon.type.black"
+                    :icon-url="item.count > 10000 ? icon.type.red : icon.type.green"
                     :shadow-url="icon.shdowUrl"
                     :icon-size="icon.iconSize"
                     :icon-anchor="icon.iconAnchor"
                     :popup-anchor="icon.popupAnchor"
                     :shadow-size="icon.shadowSize"
                 )
-                l-popup {{ item.name }}
+                l-popup
+                    h2 {{ item.name }}
+                    p 預估觀光人數: {{ item.count }}
+
 </template>
 <script>
 export default {
     data() {
         return {
             data: [
-                { id: 1, name: "夢時代購物中心", local: [22.595153, 120.306923] },
-                { id: 2, name: "漢神百貨", local: [22.61942, 120.296386] },
-                { id: 3, name: "漢神巨蛋", local: [22.669603, 120.302288] },
-                { id: 4, name: "大統百貨", local: [22.630748, 120.318033] }
+                // { id: 1, name: "夢時代購物中心", local: [22.595153, 120.306923] },
+                // { id: 2, name: "漢神百貨", local: [22.61942, 120.296386] },
+                // { id: 3, name: "漢神巨蛋", local: [22.669603, 120.302288] },
+                // { id: 4, name: "大統百貨", local: [22.630748, 120.318033] }
             ],
 
             zoom: 13,
@@ -50,10 +53,14 @@ export default {
             },
             icon: {
                 type: {
-                black:
-                    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
-                gold:
-                    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png"
+                    black:
+                        "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
+                    gold:
+                        "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png",
+                    green:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+                    red:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
                 },
                 shadowUrl:
                     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
@@ -69,13 +76,14 @@ export default {
     },
     watch: {
         passdata: function () {
-            this.passdata.forEach( (el, index) => {
-                console.log(el)
+            this.passdata.forEach( (el) => {
+                console.log(el.count)
                 this.data.push({
-                    id: index+5,
+                    id: el.id,
                     name: el.name,
-                    local: el.local
-                    })
+                    local: el.local,
+                    count: el.count,
+                })
             })
         }
     },
