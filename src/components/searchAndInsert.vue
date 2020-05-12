@@ -34,9 +34,18 @@
                             option(value="null" disabled selected) 請選擇縣市
                             option(v-for="item in county" :value="item.name" :key="item.id") {{ item.name }}
                         label(for="place") 景點
-                        select#place.form-control.col(v-model="selectSight")
+                        //- select#place.form-control.col(v-model="selectSight")
                             option(value="null" disabled selected) 請選擇景點
                             option(v-for="item in sightsOptions" :value="item.Id") {{ item.Name }}
+                        Multiselect(
+                            v-model="selectInsertSights",
+                            :options="sightsOptions"
+                            :multiple="true",
+                            placeholder="請選擇景點"
+                            track-by="Name",
+                            label="Name")
+                            template(slot="singleLabel", slot-scope="{ sightOptions }") {{ sightOptions.Name }}
+
                         label(for="peopleNum") 人數
                         input(type="number" v-model="peopleNum")#people.form-control.col
                         label(for="date") 日期
@@ -58,6 +67,8 @@ import jQuery from 'jquery';
 import moment from 'moment';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
+import Multiselect from 'vue-multiselect';
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 export default {
     data() {
@@ -197,6 +208,7 @@ export default {
             ],
             selectCounty: null,
             selectSight: null,
+            selectInsertSights: null,
             selectSearchType: 'mw_qryspt01.php',
             passObj: {},
             responseData: []
@@ -211,11 +223,15 @@ export default {
         },
         selectCounty() {
             console.log(this.selectCounty)
+        },
+        selectInsertSights() {
+            console.log(this.selectInsertSights.map(el => el.Id))
         }
 
     },
     components: {
-        DatePicker
+        DatePicker,
+        Multiselect
     },
     created() {
         let cors = 'https://cors-anywhere.herokuapp.com/';
@@ -227,9 +243,9 @@ export default {
                 this.responseData = jsonData.XML_Head.Infos.Info
                 // console.log(this.responseData[0])
             })
-            .then(() => {
+           /* .then(() => {
                 this.passDataToMap(this.responseData.filter(el=> el.Region == "高雄市"))
-            })
+            })*/
     },
     mounted() {
         jQuery('#searchTab').on('click', function (e) {
@@ -310,7 +326,7 @@ export default {
                         data: this.returnData,
                         type: this.selectSearchType,
                         region: this.county.filter( (el) => el.name == this.selectCounty)[0],
-                        date: moment(this.date).format(YYYYMM)
+                        date: moment(this.date).format('YYYYMM')
                     }
                     await this.$emit('returnMapData', this.passObj)
                 })
@@ -319,17 +335,36 @@ export default {
             let url = 'https://cors-anywhere.herokuapp.com/http://menswalk.prjlife.com/';
             let obj = {
                 apikey: 'listennn08776b216a1db5916031137c',
-                id: this.selectSight,
+                // id: this.selectSight,
                 date: moment(this.date).format('YYYYMMDD'),
                 count: this.peopleNum
             }
-            axios.get(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${obj.id}&date=${obj.date}&count=${obj.count}`)
+            let statusArray = []
+            this.selectInsertSights.map((el, index) => {
+                axios.get(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${el.Id}&date=${obj.date}&count=${obj.count}`)
                 .then((result) => {
-                    console.log(result)
-                    if (result.status == 200) {
-                        alert('上傳資料成功');
+                //     console.log(result)
+                //     if (result.status == 200) {
+                //         alert('上傳資料成功');
+                //     }
+                    statusArray.push({
+                        id: index,
+                        status: result.status
+                    })
+                    return statusArray;
+                }).then(respArray => {
+                    let m = respArray.filter(el => {
+                        if (el.status != 200) return el.id
+                    });
+                    if (!m.join(' ').trim()) {
+                        alert('all success upload!')
+                    } else {
+                        console.log(m)
                     }
+                    this.selectInsertSights = null;
                 })
+            })
+            
         },
         submit(type) {
             switch (type.toLowerCase()) {

@@ -18,6 +18,11 @@
             )
                 l-popup 你的位置
             l-marker(
+                ref="location"
+                :lat-lng="center"
+                v-if="!userloc"
+            )    
+            l-marker(
                 v-for="item in data"
                 :lat-lng="item.local"
                 :key="item.id"
@@ -111,7 +116,7 @@ export default {
                 this.userloc = [p.latitude, p.longitude] ;
                 this.center = [p.latitude, p.longitude] ;
                 // 將目前的位置的標記點彈跳視窗打開
-                // this.$refs.location.mapObject.openPopup();
+                this.$refs.location.mapObject.openPopup();
             }, (error) => {
                 this.zoom = 12;
                 this.center = [24.05, 120.85];
