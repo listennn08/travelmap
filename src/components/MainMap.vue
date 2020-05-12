@@ -14,6 +14,7 @@
             l-marker(
                 ref="location"
                 :lat-lng="center"
+                v-if="userloc"
             )
                 l-popup 你的位置
             l-marker(
@@ -31,7 +32,8 @@
                 )
                 l-popup
                     h2 {{ item.name }}
-                    p(v-show="typeof item.count == 'number'") 預估觀光人數: {{ item.count }}
+                    p(v-if="typeof item.count == 'number'") 預估觀光人數: {{ item.count }}
+                    p(v-if="typeof item.count == 'number' && passdata.type == 'mw_qrycnt03.php'") {{ passdata.date.substring(4)}}月預估觀光人數: {{ item.count }}
 
 </template>
 <script>
@@ -41,6 +43,7 @@ export default {
             data: [],
             zoom: 13,
             center: [22.612961, 120.304167],
+            userloc: null,
             url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             attribution: `© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors`,
             options: {
@@ -73,13 +76,13 @@ export default {
         }
     },
     props: {
-        passdata: Array,
+        passdata: Object,
     },
     watch: {
         passdata: function () {
+            console.log(this.passdata)
             this.data = [];
-            this.passdata.forEach( (el) => {
-                console.log(el.count)
+            this.passdata.data.forEach( (el) => {
                 this.data.push({
                     id: el.id,
                     name: el.name,
@@ -87,6 +90,15 @@ export default {
                     count: el.count,
                 })
             })
+            if (this.passdata.type == "mw_qryspt01.php" || this.passdata.type == "mw_qrycnt02.php") {
+                this.center = this.passdata.data[0].local;
+            } else if (this.passdata.type == "mw_qryspt02.php" || this.passdata.type == "mw_qrycnt01.php") {
+                this.zoom = 12;
+                console.log(this.passdata.region.local)
+                this.center = this.passdata.region.local || this.center;
+            } else {
+
+            }
         }
     },
     mounted() {
@@ -96,12 +108,14 @@ export default {
             navigator.geolocation.getCurrentPosition(position => {
                 const p = position.coords;
                 // 將中心點設為目前的位置
+                this.userloc = [p.latitude, p.longitude] ;
                 this.center = [p.latitude, p.longitude] ;
                 // 將目前的位置的標記點彈跳視窗打開
-                this.$refs.location.mapObject.openPopup();
+                // this.$refs.location.mapObject.openPopup();
             }, (error) => {
-                this.center = [this.center[0]+0.005, this.center[1]];
-                this.$refs.location.mapObject.openPopup();
+                this.zoom = 12;
+                this.center = [24.05, 120.85];
+                // this.$refs.location.mapObject.openPopup();
             });
         });
     }

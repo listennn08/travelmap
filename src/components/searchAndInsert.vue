@@ -13,9 +13,10 @@
                             option(v-for="item in searchType" :value="item.url") {{ item.text }}
                         label(for="scounty") 縣市
                         select#scounty.form-control(v-model="selectCounty")
-                            option(v-for="item in county") {{ item }}
-                        label(for="splace" v-if="selectSearchType=='mw_qryspt01.php' || selectSearchType=='mw_qrycnt02.php'") 景點
-                        select#splace.form-control.col(v-model="selectSight" v-if="selectSearchType=='mw_qryspt01.php' || selectSearchType=='mw_qrycnt02.php'")
+                            option(value="null" disabled selected) 請選擇縣市
+                            option(v-for="item in county" :value="item.name"  :key="item.id") {{ item.name }}
+                        label(for="splace" v-if="selectSearchType=='mw_qryspt01.php' || selectSearchType=='mw_qrycnt02.php' || selectSearchType=='mw_qrycnt03.php'") 景點
+                        select#splace.form-control.col(v-model="selectSight" v-if="selectSearchType=='mw_qryspt01.php' || selectSearchType=='mw_qrycnt02.php' || selectSearchType=='mw_qrycnt03.php'")
                             option(value="null" disabled selected) 請選擇景點
                             option(v-for="item in sightsOptions" :value="item.Id") {{ item.Name }}
                         label(for="sdate") 日期
@@ -30,7 +31,8 @@
                     .form-group
                         label(for="scounty") 縣市
                         select#county.form-control(v-model="selectCounty")
-                            option(v-for="item in county") {{ item }}
+                            option(value="null" disabled selected) 請選擇縣市
+                            option(v-for="item in county" :value="item.name" :key="item.id") {{ item.name }}
                         label(for="place") 景點
                         select#place.form-control.col(v-model="selectSight")
                             option(value="null" disabled selected) 請選擇景點
@@ -64,32 +66,117 @@ export default {
             peopleNum: 0,
             date: new Date(),
             county: [
-                "請選擇縣市",
-                "宜蘭縣",
-                "花蓮縣",
-                "金門縣",
-                "南投縣",
-                "屏東縣",
-                "苗栗縣",
-                "桃園市",
-                "高雄市",
-                "基隆市",
-                "連江縣",
-                "雲林縣",
-                "新北市",
-                "新竹市",
-                "新竹縣",
-                "嘉義市",
-                "嘉義縣",
-                "彰化縣",
-                "臺中市",
-                "臺北市",
-                "臺東縣",
-                "臺南市",
-                "澎湖縣"
+                {
+                    id: 1,
+                    name: "臺北市",
+                    local: [25.05, 121.56666],
+                },
+                {
+                    id: 2,
+                    name: "臺中市",
+                    local: [24.18333, 120.61666],
+                },
+                {
+                    id: 3,
+                    name:  "基隆市",
+                    local: [25.13333, 121.73333],
+                },
+                {
+                    id: 4,
+                    name: "臺南市",
+                    local: [23.13333, 120.28333],
+                },
+                {
+                    id: 5,
+                    name: "高雄市",
+                    local: [22.8, 120.35],
+                },
+                {
+                    id: 6,
+                    name: "新北市",
+                    local: [25.05, 121.56666],
+                },
+                {
+                    id: 7,
+                    name: "宜蘭縣",
+                    local: [24.76666, 121.75],
+                },
+                {
+                    id: 8,
+                    name: "桃園市",
+                    local: [24.95, 121.21666],
+                },
+                {
+                    id: 9,
+                    name: "嘉義市",
+                    local: [23.48333, 120.45],
+                },
+                {
+                    id: 10,
+                    name: "新竹縣",
+                    local: [24.73333, 121.08333],
+                },
+                {
+                    id: 11,
+                    name: "苗栗縣",
+                    local: [24.55, 120.81666],
+                },
+                {
+                    id: 12,
+                    name: "南投縣",
+                    local: [24.05, 120.85],
+                },
+                {
+                    id: 13,
+                    name: "彰化縣",
+                    local: [23.96666, 120.56666],
+                },
+                {
+                    id: 14,
+                    name: "新竹市",
+                    local: [24.73333, 121.08333],
+                },
+                {
+                    id: 15,
+                    name: "雲林縣",
+                    local: [23.66666, 120.38333],
+                },
+                {
+                    id: 16,
+                    name: "嘉義縣",
+                    local: [23.48333, 120.45],
+                },
+                {
+                    id: 17,
+                    name: "屏東縣",
+                    local: [22.36666, 120.58333],
+                },
+                {
+                    id: 18,
+                    name: "花蓮縣",
+                    local: [23.98333, 121.6],
+                },
+                {
+                    id: 19,
+                    name: "臺東縣",
+                    local: [22.75, 121.15],
+                },
+                {
+                    id: 20,
+                    name: "金門縣",
+                    local: [24.5, 118.41666],
+                },
+                {
+                    id: 21,
+                    name: "澎湖縣",
+                    local: [23.56666, 119.55],
+                },
+                {
+                    id: 22,
+                    name: "連江縣",
+                    local: [26.2, 119.88333],
+                },
             ],
-            selectCounty: "請選擇縣市",
-            selectSight: null,
             searchType: [
                 {
                     text: "查詢單一景點資訊",
@@ -108,7 +195,10 @@ export default {
                     url: "mw_qrycnt03.php"
                 }
             ],
+            selectCounty: null,
+            selectSight: null,
             selectSearchType: 'mw_qryspt01.php',
+            passObj: {},
             responseData: []
         }
     },
@@ -118,7 +208,11 @@ export default {
         },
         selectSight() {
             console.log(this.selectSight)
+        },
+        selectCounty() {
+            console.log(this.selectCounty)
         }
+
     },
     components: {
         DatePicker
@@ -212,7 +306,13 @@ export default {
                     });
                 })
                 .then(async() => {
-                    await this.$emit('returnMapData', this.returnData)
+                    this.passObj = {
+                        data: this.returnData,
+                        type: this.selectSearchType,
+                        region: this.county.filter( (el) => el.name == this.selectCounty)[0],
+                        date: moment(this.date).format(YYYYMM)
+                    }
+                    await this.$emit('returnMapData', this.passObj)
                 })
         },
         insertApi() {
@@ -223,7 +323,7 @@ export default {
                 date: moment(this.date).format('YYYYMMDD'),
                 count: this.peopleNum
             }
-            axios.post(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${obj.id}&date=${obj.date}&count=${obj.count}`)
+            axios.get(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${obj.id}&date=${obj.date}&count=${obj.count}`)
                 .then((result) => {
                     console.log(result)
                     if (result.status == 200) {
@@ -236,7 +336,7 @@ export default {
                 case 'search':
                     if (this.selectSearchType == "mw_qryspt01.php" || this.selectSearchType == "mw_qrycnt02.php") {
                         if (!this.selectSight) {
-                            alert('請檢查景點欄位');
+                            alert('請選擇景點欄位');
                             return;
                         }
                     } else {}
@@ -247,7 +347,7 @@ export default {
                         this.selectSearchType = "mw_addcnt01.php";
                     }
                     if (this.peopleNum == 0 || this.selectSight == '') {
-                        alert('請檢查欄位, 人數不可為0');
+                        alert('請填寫欄位, 人數不可為0');
                         return;
                     }
                     this.insertApi();
@@ -269,7 +369,7 @@ export default {
                         })
             })
 
-            this.$emit('returnMapData', this.returnData);
+            this.$emit('returnMapData', { data: this.returnData, type: this.selectSearchType, region: this.selectCounty });
             // this.$emit('test', arguments[0])
         },
         collapse() {

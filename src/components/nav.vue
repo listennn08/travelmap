@@ -1,7 +1,7 @@
 <template lang="pug">
     nav#nav.nav
         li
-            button.btn.btn-default.h4(@click="collapse()") ☰ 新增/查詢
+            button.btn.btn-light.h4(@click="collapse()") ☰ 新增/查詢
 </template>
 <script>
 import jQuery from 'jquery';
@@ -18,7 +18,6 @@ export default {
                 jQuery("#map").css('width', "60%");
             } else {
                 jQuery('#searchAndInsert').css('width', "0");
-                jQuery("#container").css('margin-left', "0");
                 jQuery("#map").css('width', "100%");
             }
         }
