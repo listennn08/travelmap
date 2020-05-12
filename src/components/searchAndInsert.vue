@@ -1,5 +1,6 @@
 <template lang="pug">
     #searchAndInsert
+        //- button.btn.btn-default.h4.float-right(@click="collapse()") X
         .main.col.card.mt-5
             ul.nav.nav-tabs(role="tablist")
                 li.nav-item: a#searchTab.nav-link.active(data-toggle="tab" href="#search" role="tab" aria-controls="#search" aria-selected="false") 查詢
@@ -33,7 +34,7 @@
                         label(for="place") 景點
                         select#place.form-control.col(v-model="selectSight")
                             option(value="null" disabled selected) 請選擇景點
-                            option(v-for="item in sightsOptions" :value="item.id") {{ item.Name }}
+                            option(v-for="item in sightsOptions" :value="item.Id") {{ item.Name }}
                         label(for="peopleNum") 人數
                         input(type="number" v-model="peopleNum")#people.form-control.col
                         label(for="date") 日期
@@ -115,6 +116,9 @@ export default {
         date() {
             console.log(moment(this.date).format("YYYY/MM/DD"))
         },
+        selectSight() {
+            console.log(this.selectSight)
+        }
     },
     components: {
         DatePicker
@@ -197,6 +201,7 @@ export default {
                 .then((data) => {
                     this.returnData = [];
                     data.forEach(element => {
+                        console.log(element.c)
                         this.returnData.push({
                             id: element.i,
                             name: element.n,
@@ -220,7 +225,7 @@ export default {
             }
             axios.post(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${obj.id}&date=${obj.date}&count=${obj.count}`)
                 .then((result) => {
-                    // console.log(result)
+                    console.log(result)
                     if (result.status == 200) {
                         alert('上傳資料成功');
                     }
@@ -249,7 +254,7 @@ export default {
                     break;
                 default:
                     alert('Error');
-                        
+
             }
             this.collapse();
         },
@@ -260,7 +265,7 @@ export default {
                             name: el.Name,
                             add: el.Add,
                             local: [el.Py, el.Px],
-                            count: el.c
+                            count: Math.floor(Math.random() * 20000)
                         })
             })
 

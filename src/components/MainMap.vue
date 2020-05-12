@@ -22,7 +22,7 @@
                 :key="item.id"
             )
                 l-icon(
-                    :icon-url="item.count > 10000 ? icon.type.red : icon.type.green"
+                    :icon-url="item.count > 25000 ? icon.type.purple : item.count > 20000 ? icon.type.red : item.count > 15000 ? icon.type.orange : item.count > 10000 ? icon.type.yellow : icon.type.green"
                     :shadow-url="icon.shdowUrl"
                     :icon-size="icon.iconSize"
                     :icon-anchor="icon.iconAnchor"
@@ -31,7 +31,7 @@
                 )
                 l-popup
                     h2 {{ item.name }}
-                    p(v-show="item.count!=''") 預估觀光人數: {{ item.count }}
+                    p(v-show="typeof item.count == 'number'") 預估觀光人數: {{ item.count }}
 
 </template>
 <script>
@@ -54,10 +54,14 @@ export default {
                         "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png",
                     green:
                         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-                    oringe:
+                    orange:
                         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
                     red:
                         "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+                    yellow:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png",
+                    purple:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png"
                 },
                 shadowUrl:
                     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
@@ -75,6 +79,7 @@ export default {
         passdata: function () {
             this.data = [];
             this.passdata.forEach( (el) => {
+                console.log(el.count)
                 this.data.push({
                     id: el.id,
                     name: el.name,
@@ -103,7 +108,7 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-html, body 
+html, body
     padding: 0
     margin: 0
 </style>

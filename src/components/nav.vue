@@ -1,7 +1,7 @@
 <template lang="pug">
     nav#nav.nav
         li
-            button.btn.btn-default(@click="collapse()") ☰
+            button.btn.btn-default.h4(@click="collapse()") ☰ 新增/查詢
 </template>
 <script>
 import jQuery from 'jquery';
@@ -25,3 +25,7 @@ export default {
     }
 }
 </script>
+<style lang="sass" scope>
+    button
+        outline: none
+</style>
