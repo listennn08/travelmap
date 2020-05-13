@@ -1,7 +1,9 @@
 <template lang="pug">
-    #searchAndInsert.searchAndInsert.closeSearch
-        //- button.btn.btn-default.h4.float-right(@click="collapse()") X
-        .main.col.card.mt-5
+    #searchAndInsert.searchAndInsert
+        .marked.mt-2.float-right(v-if="!showMark")
+            div 景點資料來源:
+                a(href="https://data.gov.tw/dataset/7777") 觀光局
+        .main.col-md.col-sm.card.mt-5
             ul.nav.nav-tabs(role="tablist")
                 li.nav-item: a#searchTab.nav-link.active(data-toggle="tab" href="#search" role="tab" aria-controls="#search" aria-selected="false") 查詢
                 li.nav-item.active: a#insertTab.nav-link(data-toggle="tab" href="#insert" role="tab" aria-controls="#insert" aria-selected="false") 新增
@@ -55,7 +57,7 @@
                         button(@click="submit('insert')").form-control.btn.btn-outline-primary.offset-md-1.col-md-5 新增
                         button(@click="collapse()").form-control.btn.btn-outline-danger.col-md-5 取消
                         .result
-                #marked.offset-md-6.offset-sm-9.col-md-7.col-sm-8
+                .marked.offset-md-6.offset-sm-9.col-md-7.col-sm-8(v-if="showMark")
                     h6 景點資料來源:
                         a(href="https://data.gov.tw/dataset/7777") 觀光局
 </template>
@@ -71,6 +73,9 @@ import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 export default {
+    props: {
+        collapse: Function
+    },
     data() {
         return {
             returnData: [],
@@ -266,6 +271,9 @@ export default {
             return this.selectCounty == "請選擇縣市"
                 ? this.responseData
                 : returnData;
+        },
+        showMark() {
+            return jQuery(window).width() > 500 ? true : false;
         }
     },
     methods: {
@@ -409,17 +417,6 @@ export default {
             this.$emit('returnMapData', { data: this.returnData, type: this.selectSearchType, region: this.selectCounty });
             // this.$emit('test', arguments[0])
         },
-        collapse() {
-            // console.log(jQuery('#searchAndInsert').css('width') == "0px");
-            if (jQuery('#searchAndInsert').css('width') == "0px") {
-                jQuery('#searchAndInsert').css('width', "30%");
-                jQuery("#map").css('width', "60%");
-            } else {
-                jQuery('#searchAndInsert').css('width', "0");
-                jQuery("#container").css('margin-left', "0");
-                jQuery("#map").css('width', "100%");
-            }
-        }
     }
 }
 </script>

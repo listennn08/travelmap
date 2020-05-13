@@ -1,5 +1,5 @@
 <template lang="pug">
-    #map
+    #map.MainMap
         l-map(
             ref="map"
             :zoom="zoom"
