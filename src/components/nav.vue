@@ -13,12 +13,24 @@ export default {
     methods: {
         collapse() {
             // console.log(jQuery('#searchAndInsert').css('width') == "0px");
-            if (jQuery('#searchAndInsert').css('width') == "0px") {
-                jQuery('#searchAndInsert').css('width', "30%");
-                jQuery("#map").css('width', "60%");
+
+            if (jQuery(window).width() < 960) {
+                if (jQuery('#searchAndInsert').css('height') == "0px") {
+                    jQuery('#searchAndInsert').css('height', "30%");
+                    jQuery("#map").css('height', "30%");
+                } else {
+                    jQuery('#searchAndInsert').css('height', "0");
+                    jQuery("#map").css('height', "60%");
+                }
             } else {
-                jQuery('#searchAndInsert').css('width', "0");
-                jQuery("#map").css('width', "100%");
+                console.log(jQuery('#searchAndInsert').height());
+                if (jQuery('#searchAndInsert').css('width') == "0px") {
+                    jQuery('#searchAndInsert').css('width', "30%");
+                    jQuery("#map").css('width', "60%");
+                } else {
+                    jQuery('#searchAndInsert').css('width', "0");
+                    jQuery("#map").css('width', "100%");
+                }
             }
         }
     }

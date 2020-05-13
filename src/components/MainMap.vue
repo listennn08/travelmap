@@ -21,7 +21,7 @@
                 ref="location"
                 :lat-lng="center"
                 v-if="!userloc"
-            )    
+            )
             l-marker(
                 v-for="item in data"
                 :lat-lng="item.local"

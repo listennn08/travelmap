@@ -1,5 +1,5 @@
 <template lang="pug">
-    #searchAndInsert
+    #searchAndInsert.searchAndInsert.closeSearch
         //- button.btn.btn-default.h4.float-right(@click="collapse()") X
         .main.col.card.mt-5
             ul.nav.nav-tabs(role="tablist")
@@ -222,7 +222,8 @@ export default {
             console.log(this.selectSight)
         },
         selectCounty() {
-            console.log(this.selectCounty)
+            // this.selectInsertSights = null;
+            console.log(this.selectCounty);
         },
         selectInsertSights() {
             console.log(this.selectInsertSights.map(el => el.Id))
@@ -361,10 +362,11 @@ export default {
                     } else {
                         console.log(m)
                     }
+                    this.selectCounty = null;
                     this.selectInsertSights = null;
                 })
             })
-            
+
         },
         submit(type) {
             switch (type.toLowerCase()) {
