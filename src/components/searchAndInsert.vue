@@ -55,7 +55,7 @@
                         date-picker#date.date.form-group(v-model="date" format="YYYY/MM/DD")
                         br
                         button(@click="submit('insert')").form-control.btn.btn-outline-primary.offset-md-1.col-md-5 新增
-                        button(@click="collapse()").form-control.btn.btn-outline-danger.col-md-5 取消
+                        button(@click="cancel()").form-control.btn.btn-outline-danger.col-md-5 取消
                         .result
                 .marked.offset-md-6.offset-sm-9.col-md-7.col-sm-8(v-if="showMark")
                     h6 景點資料來源:
@@ -417,6 +417,12 @@ export default {
             this.$emit('returnMapData', { data: this.returnData, type: this.selectSearchType, region: this.selectCounty });
             // this.$emit('test', arguments[0])
         },
+        cancel() {
+            this.selectInsertSights = null;
+            this.selectSight = null;
+            this.selectCounty = null;
+            this.collapse();
+        }
     }
 }
 </script>
