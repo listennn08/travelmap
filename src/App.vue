@@ -28,6 +28,11 @@ export default {
             collapseFn: null,
         }
     },
+    computed: {
+        getWindowWidth() {
+
+        }
+    },
     created() {
         this.collapseFn = this.collapse;
     },
@@ -36,35 +41,8 @@ export default {
             this.mapData = arguments[0];
         },
         collapse() {
-            // console.log(jQuery('#searchAndInsert').css('width') == "0px");
-            if (jQuery(window).width() <= 1024 && jQuery(window).width() > 560) {
-                if (jQuery('#searchAndInsert').width() == 0) jQuery('#searchAndInsert').width("50%");
-                if (jQuery('#searchAndInsert').height() == 0) {
-                    jQuery('#searchAndInsert').css('height', "80%");
-                    jQuery('#map').css('margin-top', '70%')
-                } else {
-                    jQuery('#searchAndInsert').css('height', "0");
-                    jQuery("#map").css('margin-top', "0");
-                }
-            } else if (jQuery(window).width() <= 560) {
-                console.log('here')
-                if (jQuery('#searchAndInsert').width() == 0) jQuery('#searchAndInsert').width("100%");
-                if (jQuery('#searchAndInsert').height() == 0) {
-                    jQuery('#searchAndInsert').css('height', "90%");
-                    jQuery('#map').css('margin-top', '150%')
-                } else {
-                    jQuery('#searchAndInsert').css('height', "0");
-                    jQuery("#map").css('margin-top', "0");
-                }
-            } else {
-                if (jQuery('#searchAndInsert').css('width') == "0px") {
-                    jQuery('#searchAndInsert').css('width', "30%");
-                    jQuery("#map").css('width', "60%");
-                } else {
-                    jQuery('#searchAndInsert').css('width', "0");
-                    jQuery("#map").css('width', "100%");
-                }
-            }
+            jQuery('#searchAndInsert').toggleClass('open');
+            jQuery('#map').toggleClass('open');
         }
     }
 }
@@ -72,6 +50,7 @@ export default {
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900&display=swap");
+
 @media screen and (min-width: 1025px) {
     .searchAndInsert {
         float: left;
@@ -79,11 +58,17 @@ export default {
         width: 0;
         transition: width .5s;
     }
+    .searchAndInsert.open {
+        width: 30%;
+    }
     .MainMap {
         float: right;
         width: 100%;
         height: 60%;
         transition: width .5s;
+    }
+    .MainMap.open {
+        width: 60%;
     }
 }
 @media screen and (max-width: 1024px) and (min-width: 960px){
@@ -95,10 +80,16 @@ export default {
         height: 0;
         transition: height .5s;
     }
+    .searchAndInsert.open {
+        height: 70%;
+    }
     .MainMap {
         float: bottom;
         width: 100%;
         transition: margin-top .5s;
+    }
+    .MainMap.open {
+        margin-top: 50%;
     }
 }
 @media screen and (max-width: 960px) {
@@ -110,13 +101,40 @@ export default {
         height: 0;
         transition: height .5s;
     }
+    .searchAndInsert.open {
+        height: 70%;
+    }
     .MainMap {
         float: bottom;
         width: 100%;
         transition: margin-top .5s;
     }
+    .MainMap.open {
+        margin-top: calc(75% - 8vw);
+    }
 }
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 760px) {
+     .searchAndInsert {
+        float: top;
+        top: 1%;
+        left: 20%;
+        width: 60%;
+        height: 0;
+        transition: height .5s;
+    }
+    .searchAndInsert.open {
+        height: 90%;
+    }
+    .MainMap {
+        float: bottom;
+        width: 100%;
+        transition: margin-top .5s;
+    }
+    .MainMap.open {
+        margin-top: 80%;
+    }
+}
+@media screen and (max-width: 640px) {
      .searchAndInsert {
         float: top;
         top: 0;
@@ -125,10 +143,24 @@ export default {
         height: 0;
         transition: height .5s;
     }
+    .searchAndInsert.open {
+        height: 70%;
+    }
     .MainMap {
         float: bottom;
         width: 100%;
         transition: margin-top .5s;
+    }
+    .MainMap.open {
+        margin-top: 100% ;
+    }
+}
+@media screen and (max-width: 480px) {
+    .searchAndInsert.open {
+        height: 70%;
+    }
+    .MainMap.open {
+        margin-top: 135% ;
     }
 }
 * {
