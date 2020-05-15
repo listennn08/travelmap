@@ -49,7 +49,7 @@
                             template(slot="singleLabel", slot-scope="{ sightOptions }") {{ sightOptions.Name }}
 
                         label(for="peopleNum") 人數
-                        input(type="number" v-model="peopleNum")#people.form-control.col
+                        input(type="number" v-model="peopleNum" min="0" placeholder="0")#people.form-control.col
                         label(for="date") 日期
                         br
                         date-picker#date.date.form-group(v-model="date" format="YYYY/MM/DD")
@@ -70,7 +70,8 @@ import moment from 'moment';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import Multiselect from 'vue-multiselect';
-import 'vue-multiselect/dist/vue-multiselect.min.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css';
+
 
 export default {
     props: {
@@ -79,7 +80,7 @@ export default {
     data() {
         return {
             returnData: [],
-            peopleNum: 0,
+            peopleNum:  null,
             date: new Date(),
             county: [
                 {
@@ -216,23 +217,23 @@ export default {
             selectInsertSights: null,
             selectSearchType: 'mw_qryspt01.php',
             passObj: {},
-            responseData: []
+            responseData: [],
         }
     },
     watch: {
         date() {
-            console.log(moment(this.date).format("YYYY/MM/DD"))
+            // console.log(moment(this.date).format("YYYY/MM/DD"))
         },
         selectSight() {
-            console.log(this.selectSight)
+            // console.log(this.selectSight)
         },
         selectCounty() {
             // this.selectInsertSights = null;
-            console.log(this.selectCounty);
+            // console.log(this.selectCounty);
         },
         selectInsertSights() {
-            console.log(this.selectInsertSights.map(el => el.Id))
-        }
+            // console.log(this.selectInsertSights.map(el => el.Id))
+        },
 
     },
     components: {
@@ -240,14 +241,15 @@ export default {
         Multiselect
     },
     created() {
-        let cors = 'https://cors-anywhere.herokuapp.com/';
-        let url = 'https://gis.taiwan.net.tw/XMLReleaseALL_public/scenic_spot_C_f.json';
+        // let cors = 'https://cors-anywhere.herokuapp.com/';
+        // let url = 'https://gis.taiwan.net.tw/XMLReleaseALL_public/scenic_spot_C_f.json';
+        let url = './static/sightdata.json'
         axios
-            .get(`${cors}${url}`)
+            .get(`${url}`)
             .then((result) => result.data)
             .then((jsonData) => {
+                // console.log(jsonData.XML_Head)
                 this.responseData = jsonData.XML_Head.Infos.Info
-                // console.log(this.responseData[0])
             })
            /* .then(() => {
                 this.passDataToMap(this.responseData.filter(el=> el.Region == "高雄市"))
@@ -268,7 +270,7 @@ export default {
             let returnData = this
                 .responseData
                 .filter(el => el.Region == this.selectCounty);
-            return this.selectCounty == "請選擇縣市"
+            return this.selectCounty == null
                 ? this.responseData
                 : returnData;
         },
@@ -282,7 +284,8 @@ export default {
             let obj = {
                 apikey: 'listennn08776b216a1db5916031137c'
             };
-            let url = `${cors}http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
+            // let url = `${cors}http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
+            let url = `$http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
             switch (this.selectSearchType) {
                 case 'mw_qryspt01.php':
                     obj.id = this.selectSight;
@@ -311,16 +314,11 @@ export default {
             // console.log(`${cors}http://menswalk.prjlife.com/${this.selectSearchType}`)
 
 			axios.get(url)
-                .then((result) => {
-                    console.group('result');
-                    console.log(result);
-                    console.groupEnd();
-                    return result.data
-                })
+                .then((result) =>  result.data)
                 .then((data) => {
                     this.returnData = [];
                     data.forEach(element => {
-                        console.log(element.c)
+                        // console.log(element.c)
                         this.returnData.push({
                             id: element.i,
                             name: element.n,
@@ -340,48 +338,63 @@ export default {
                     await this.$emit('returnMapData', this.passObj)
                 })
         },
-        insertApi() {
-            let url = 'https://cors-anywhere.herokuapp.com/http://menswalk.prjlife.com/';
+        async insertApi() {
+            let cors = 'https://cors-anywhere.herokuapp.com/';
+            let url = 'http://menswalk.prjlife.com/';
+            // url = `${cors}${url}`
             let obj = {
                 apikey: 'listennn08776b216a1db5916031137c',
                 // id: this.selectSight,
                 date: moment(this.date).format('YYYYMMDD'),
                 count: this.peopleNum
             }
-            let statusArray = []
-            this.selectInsertSights.map((el, index) => {
-                axios.get(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${el.Id}&date=${obj.date}&count=${obj.count}`)
-                .then((result) => {
+            axios.all(this.selectInsertSights.map((el, index) => {
+                return axios.get(`${url}${this.selectSearchType}?apikey=${obj.apikey}&id=${el.Id}&date=${obj.date}&count=${obj.count}`)
+                    .then((result) => {
                 //     console.log(result)
                 //     if (result.status == 200) {
                 //         alert('上傳資料成功');
                 //     }
-                    statusArray.push({
-                        id: index,
-                        status: result.status
-                    })
-                    return statusArray;
-                }).then(respArray => {
-                    let m = respArray.filter(el => {
-                        if (el.status != 200) return el.id
-                    });
-                    if (!m.join(' ').trim()) {
-                        alert('all success upload!')
-                    } else {
-                        console.log(m)
-                    }
-                    this.selectCounty = null;
-                    this.selectInsertSights = null;
-                })
-            })
+                        try {
+                            return {
+                                id: el.Id,
+                                status: result.status
+                            }
+                        } catch (error) {
+                            return {
+                                id: index,
+                                status: error
+                            }
+                        }
 
+                    })
+            })).then( (statusArray) => statusArray.filter(el => {
+                    if (el.status != 200) return el.id;
+
+            })).then( (errorArray) => {
+                if (!errorArray.length) {
+                     alert('全部景點已上傳完成!')
+                } else {
+                    let sight = [];
+                    errorArray.forEach( (el) => {
+                        return this.responseData.filter( (data) => {
+                            if (data.Id == el.id) {
+                                sight.push(data.Name);
+                            }
+                        })
+                    })
+                    alert(`未上傳完成景點： ${sight.join(', ')}`)
+                }
+            })
+            this.selectCounty = null;
+            this.selectInsertSights = null;
         },
         submit(type) {
             switch (type.toLowerCase()) {
                 case 'search':
                     if (this.selectSearchType == "mw_qryspt01.php" || this.selectSearchType == "mw_qrycnt02.php") {
                         if (!this.selectSight) {
-                            alert('請選擇景點欄位');
+                            alert('請選擇景點欄位!');
                             return;
                         }
                     } else {}
@@ -391,8 +404,12 @@ export default {
                     if (type == 'insert') {
                         this.selectSearchType = "mw_addcnt01.php";
                     }
-                    if (this.peopleNum == 0 || this.selectSight == '') {
-                        alert('請填寫欄位, 人數不可為0');
+                    if (this.selectSight == '') {
+                        alert('請填寫景點!');
+                        return;
+                    }
+                    if (!this.peopleNum || this.peopleNum <= 0) {
+                        alert('請填寫人數, 人數不可小於1');
                         return;
                     }
                     this.insertApi();

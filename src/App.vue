@@ -155,12 +155,28 @@ export default {
         margin-top: 100% ;
     }
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 500px) {
     .searchAndInsert.open {
         height: 70%;
     }
     .MainMap.open {
+        margin-top: 120% ;
+    }
+}
+@media screen and (max-width: 400px) {
+    .searchAndInsert.open {
+        height: 80%;
+    }
+    .MainMap.open {
         margin-top: 135% ;
+    }
+}
+@media screen and (max-width: 320px) {
+    .searchAndInsert.open {
+        height: 90%;
+    }
+    .MainMap.open {
+        margin-top: 150% ;
     }
 }
 * {
