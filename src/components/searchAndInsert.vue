@@ -284,8 +284,8 @@ export default {
             let obj = {
                 apikey: 'listennn08776b216a1db5916031137c'
             };
-            // let url = `${cors}http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
-            let url = `$http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
+            let url = `${cors}http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
+            // let url = `$http://menswalk.prjlife.com/${this.selectSearchType}?apikey=${obj.apikey}`
             switch (this.selectSearchType) {
                 case 'mw_qryspt01.php':
                     obj.id = this.selectSight;
@@ -341,7 +341,7 @@ export default {
         async insertApi() {
             let cors = 'https://cors-anywhere.herokuapp.com/';
             let url = 'http://menswalk.prjlife.com/';
-            // url = `${cors}${url}`
+            url = `${cors}${url}`
             let obj = {
                 apikey: 'listennn08776b216a1db5916031137c',
                 // id: this.selectSight,
